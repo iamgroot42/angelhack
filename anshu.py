@@ -1,8 +1,54 @@
 import json
 import requests
 import time
+import grequests
+import xml
+from bs4 import BeautifulSoup
+
 from requests.packages import urllib3
 urllib3.disable_warnings()
+
+
+XPTOKEN = 'IZSqdTKn6HAw070SvuOZblBtPYetEEzf'
+continents = ['Asia','Europe','Africa','North America','South America','Australia']
+urls = []
+for x in continents:
+	urls.append("http://terminal2.expedia.com:80/x/suggestions/flights?query="+x+"&maxresults=10&apikey="+XPTOKEN)
+
+def print_url(r, **kwargs):
+    return
+
+def async(url_list):
+    sites = []
+    for u in url_list:
+        rs = grequests.get(u, hooks=dict(response=print_url))
+        sites.append(rs)
+    return grequests.map(sites)
+
+l =  async(urls)
+recc = {}
+
+
+def stripHtmlTags(htmlTxt):
+	return ''.join(BeautifulSoup(htmlTxt,"lxml").findAll(text=True)) 
+
+
+for i in l:
+	x = i.json()['sr']  	
+	for j in x:
+		name = stripHtmlTags(j['d']) 
+		recc[name] = j['score']
+		lat = j['ll']['lat']
+		lng = j['ll']['lng']
+
+
+for w in sorted(d, key=d.get, reverse=True):
+	print w, d[w]
+
+print recc
+
+exit()
+
 
 TOKEN = "EAACEdEose0cBABuDjEPf5XUOfT1qwBzQja17IKJN4bEENcCjP8f6T11xiRFihASBewDZA0rzP8YGS7EaTl1hE2U9ZA7d4ZCovqIHMTkjyGgs04i3zcJuyu1iDm0E0gGoI8ZAvcHIPrSMK7OZADy6S4L4rEys41oLFGeeglcyB6gZDZD"
 LIMIT = 1000
@@ -12,6 +58,7 @@ url = 'https://graph.facebook.com/v2.5/' + fb_id + '/posts?fields=place&limit=' 
 resp = json.loads(requests.get(url).text) 
 count = 0
 
+places = []
 
 while resp is not None and count < 50000:
 	if 'error' in resp:
@@ -35,7 +82,7 @@ while resp is not None and count < 50000:
 		try:
 			city = i['place']['location']['city']
 			country = i['place']['location']['country']
-			print city,country
+			places.append((city, country))
 			count += 1
 		except:
 			continue
@@ -48,3 +95,5 @@ while resp is not None and count < 50000:
 			resp = None
 	else:
 		resp = None	
+
+print places
