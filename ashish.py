@@ -2,6 +2,7 @@ from urllib2 import *
 import json
 from pprint import *
 from datetime import *
+from flask import Flask
 
 expedia_key = "IZSqdTKn6HAw070SvuOZblBtPYetEEzf"
 
@@ -17,12 +18,13 @@ print regionId
 
 #Step 2:
 #Modify this to get user input through chat bot
-starRatingWanted = (float)(raw_input())
+starRatingWanted = 3.0
 url = "http://terminal2.expedia.com/x/mhotels/search?regionId=" \
 	+ str(regionId) + "&checkInDate=" + str(date.today()) + "&checkOutDate=" \
 	+ str(date.today() + timedelta(days=1)) + "&room1=2&apikey=" + expedia_key
 req = Request(url=url)
 data = urlopen(req)
+# print data.read()
 hotels = json.loads(data.read())["hotelList"]
 hotelIds = []
 for hotel in hotels:
@@ -41,12 +43,12 @@ url = "http://terminal2.expedia.com/x/packages?departureDate=" \
 	+ departureDate + "&originAirport=" + originAirport \
 	+ "&destinationAirport=" + destinationAirport + "&returnDate=" \
 	+ returnDate + "&hotelids=" + ','.join(str(x) for x in hotelIds) \
-	+ "&adults=" + adults + "&limit=20&nonstop=true&apikey=" + expedia_key
+	+ "&adults=" + adults + "&limit=1&nonstop=true&apikey=" + expedia_key
 # url = "http://terminal2.expedia.com/x/packages?departureDate=" \
 # 	+ departureDate + "&originAirport=" + originAirport \
 # 	+ "&destinationAirport=" + destinationAirport + "&returnDate=" \
 # 	+ returnDate + "&regionid=" + regionId + "&adults=" \
-# 	+ adults + "&limit=20&nonstop=true&apikey=" + expedia_key
+# 	+ adults + "&limit=1&nonstop=true&apikey=" + expedia_key
 print url
 req = Request(url=url)
 data = urlopen(req)
