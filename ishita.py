@@ -32,12 +32,29 @@ def find_city_id():
 		return jdata['_id']
 			#json_data.close()
 
-cityid = find_city_id()
+# cityid = find_city_id()
 
-print cityid
+# print cityid
 def predict():
 	response= requests.get("http://api.openweathermap.org/data/2.5/forecast/daily?id="+str(cityid)+"&cnt=3&APPID=59847d23a3f26701b9626e666bc22ecb")
 	#print response.json()
 	#print response.json()
 
-predict()
+#predict()
+
+def places_of_interest(latitude, longitude):
+	#print "kawaii"
+	response = requests.get("http://terminal2.expedia.com/x/geo/features?within=35km&lng="+str(longitude)+"&lat="+str(latitude)+"&type=point_of_interest&verbose=3&lcid=1033&apikey=IZSqdTKn6HAw070SvuOZblBtPYetEEzf")
+	#print "kawaii"
+	x =  response.json()
+	print len(x)
+	j =0
+	for i in x:
+		popularity[j] = i['popularity']
+		score[j] = i['score']
+		name[j] = i['name']
+		computedPopularity[j]= i['computedPopularity']
+		j+=1
+
+
+places_of_interest(37.777363, -122.453269 )
