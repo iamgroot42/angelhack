@@ -1,0 +1,176 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <title>dISCOVERY</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <!-- Loading Bootstrap -->
+    <link href="/css/vendor/bootstrap/css/bootstrap.min.css" rel="stylesheet">
+    <link href="/css/vendor/FA/css/font-awesome.min.css" rel="stylesheet">
+    <!-- Loading Flat UI -->
+    <link href="/css/flat-ui.min.css" rel="stylesheet">
+
+    <link rel="shortcut icon" href="img/favicon.ico">
+
+    <!-- HTML5 shim, for IE6-8 support of HTML5 elements. All other JS at the end of file. -->
+    <!--[if lt IE 9]>
+      <script src="js/vendor/html5shiv.js"></script>
+      <script src="js/vendor/respond.min.js"></script>
+    <![endif]-->
+  </head>
+  <body>
+      <div class="container" style="margin-top:-25px;">
+      <h6> &nbsp;</h6> 
+      <div class="row demo-row">
+        <div class="col-xs-12">
+          <nav class="navbar navbar-inverse navbar-embossed" role="navigation">
+            <div class="navbar-header">
+              <button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#navbar-collapse-01">
+                <span class="sr-only">Toggle navigation</span>
+              </button>
+              <a class="navbar-brand" href="/">dISCOVERY!</a>
+            </div>
+            <div class="collapse navbar-collapse" id="navbar-collapse-01">
+              <ul class="nav navbar-nav navbar-left">
+                <li><a href="#fakelink">Stumble<span class="navbar-unread">1</span></a></li>
+                <li class="dropdown">
+                  <a href="#" class="dropdown-toggle" data-toggle="dropdown">Exlore new<b class="caret"></b></a>
+                  <span class="dropdown-arrow"></span>
+                  <ul class="dropdown-menu">
+                    <li><a href="#">Favlists</a></li>
+                    <li><a href="#">Another action</a></li>
+                    <li><a href="#">Something else here</a></li>
+                    <li class="divider"></li>
+                    <li><a href="#">Separated link</a></li>
+                  </ul>
+                </li>
+                <li><a href="#fakelink">About Us</a></li>
+               </ul>
+               
+            </div><!-- /.navbar-collapse -->
+          </nav><!-- /navbar -->
+        </div>
+      </div> <!-- /row -->
+    </div>
+    <div class="container">
+    <div class="row" style="background-size:100%;background-image: url('img/bg1.png');background-color: #2ecc71;color:white;text-align:center"><br/><br/><br/><h1>Discover new places</h1><br/><br/><br/>
+    </div>
+    <div class="row" style="background-size:100%;background-image: url('img/bg2.jpg');background-color: #9b59b6;color:white;text-align:center"><br/><br/><br/><h1>Suggest new places</h1><br/><br/><br/>
+    </div>
+    <div class="row" style="background-color: #9b59b6;color:white;text-align:center"><br/><br/><br/><h1>dISCOVERY!</h1><h3><i>Bringing the world closer</i></h3><br/><br/><br/>
+    </div>
+    <div class="row" style="color:white;text-align:center">
+    &nbsp;<br/>
+    </div>
+    <div class="row">
+        <div class="col-md-3">
+          <div class="tile">
+            <!-- <img src="img/icons/svg/compas.svg" alt="Compas" class="tile-image big-illustration"> -->
+            <h1><i class="fa fa-facebook"></i></h1>
+            <h3 class="tile-title">Facebook</h3>
+            <p>Analyses Posts and geolocation</p>
+            <a class="btn btn-primary btn-large btn-block" href="http://designmodo.com/flat">Login via Facebook</a>
+          </div>
+        </div>
+
+        <div class="col-md-3">
+          <div class="tile">
+            <h1><i class="fa fa-camera-retro"></i></h1>
+            <h3 class="tile-title">Expedia</h3>
+            <p>See all places you have gone</p>
+            <a class="btn btn-primary btn-large btn-block" href="http://designmodo.com/flat">Login via Expedia</a>
+          </div>
+        </div>
+
+        <div class="col-md-3">
+          <div class="tile">
+            <h1><i class="fa fa-twitter"></i></h1>
+            <h3 class="tile-title">Twitter</h3>
+            <p>Tweets and Images</p>
+            <a class="btn btn-primary btn-large btn-block" href="http://designmodo.com/flat">Login via Twitter</a>
+          </div>
+        </div>
+
+        <div class="col-md-3">
+          <div class="tile tile-hot">
+            <img src="img/icons/svg/ribbon.svg" alt="ribbon" class="tile-hot-ribbon">
+            <h1><i class="fa fa-comment-o"></i></h1>
+            <h3 class="tile-title">Chatbot</h3>
+            <p>A Live AI Bot to help</p>
+            <button type="button" class="btn btn-primary btn-large btn-block" data-toggle="modal" data-target="#myModal">Open Modal</button>
+          </div>
+
+        </div>
+      </div>
+    </div>  
+    </div>
+    </div>
+    <div id="myModal" class="modal fade" role="dialog">
+  <div class="modal-dialog">
+
+    <!-- Modal content-->
+    <div class="modal-content">
+      <div class="modal-header">
+        <button type="button" class="close" data-dismiss="modal">&times;</button>
+        <h4 class="modal-title">dISCOVERY! ChatBot</h4>
+      </div>
+      <div class="modal-body">
+        <div class="row"><div class="col-lg-12">Please enter a username to chat.</div></div>
+        <div class="row">
+        <div class="form-group col-lg-10">
+            <input type="text" value="" placeholder="Enter a alphanumeric tag" class="form-control" id="chatBox" />
+        </div>
+        <div class="col-lg-2"><button id="userSubmit" class="btn btn-block btn-primary">Submit</button></div>
+        </div>
+      </div>
+      <div class="modal-footer">
+        
+      </div>
+    </div>
+
+  </div>
+     <!-- /tile
+    <!-- /.container -->
+
+    <!-- jQuery (necessary for Flat UI's JavaScript plugins) -->
+    <script src="/js/vendor/jquery.min.js"></script>
+    <!-- Include all compiled plugins (below), or include individual files as needed -->
+    <script src="/js/vendor/video.js"></script>
+    <script src="/js/flat-ui.min.js"></script>
+
+    <script>
+
+    $("#userSubmit").click(function(){
+      var des = $("#chatBox").val();
+      if(des.length == 0) {if(!$("#chatBox").hasClass('has-error')) $("#chatBox").parent().addClass('has-error');$("#chatBox").prop("placeholder","Write Something atleast")}
+      else {
+        $.ajax({
+
+        url: 'http://10.1.0.88:5000/checkUsername?username='+des,
+        type: 'GET',
+        crossDomain: true,
+        success: function(data) {
+          if (typeof(Storage) !== "undefined" && data=="True") {
+            localStorage.setItem("username",des);
+            window.location.replace("/chatbot.html");
+          } 
+          else {if(!$("#chatBox").hasClass('has-error')) $("#chatBox").parent().addClass('has-error');$("#chatBox").val("Username already used!");}
+        },
+        error: function(err) { alert('Failed!'); }
+      });
+      }
+    })
+
+
+      $( ".modal" ).on('shown.bs.modal', function(e)
+      {
+        $.get("http://10.1.0.88:5000/getCurrentUsers",function(data)
+        {
+          $(".modal-footer").html("Currently Active Users: "+data);
+        });
+      });
+    </script>
+
+  </body>
+</html>
