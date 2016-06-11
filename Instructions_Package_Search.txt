@@ -1,0 +1,12 @@
+To get region id do the following query:
+http://terminal2.expedia.com/x/suggestions/regions?query=amsterdam&apikey=IZSqdTKn6HAw070SvuOZblBtPYetEEzf
+
+sr[0]->id is the result
+
+Searh hotels based on above region id
+http://terminal2.expedia.com/x/mhotels/search?regionId=179898&checkInDate=2016-12-01&checkOutDate=2016-12-03&room1=2&apikey=IZSqdTKn6HAw070SvuOZblBtPYetEEzf
+Select all hotels with rating >= user_specified_rating
+
+For packages deals use following url
+http://terminal2.expedia.com/x/packages?departureDate=2016-04-20&originAirport=SEA&destinationAirport=LHR&returnDate=2016-04-22&regionid=6000479&hotelids=914809,9119528&adults=2&limit=10&nonstop=true&apikey=INSERT_KEY_HERE
+Add all the hotel ids from hotels search step to hotelids parameter, change limit accordingly
