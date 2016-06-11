@@ -9,7 +9,7 @@ bot=telepot.Bot(token)
 res=bot.getUpdates()
 geolocator = Nominatim()
 
-replies=['Hey there, ', 'Would you like to go somewhere?', 'Please choose your budget:', 'Please provide your location:', 'Specify the group size:', 'Mention your date of departure:', 'Duration of vacation(in number of days):', 'Here\'s what we have planned for you:']
+replies=['Hey there, ', 'Would you like to go somewhere?', 'Please choose your budget:', 'Please provide your location:', 'Specify the group size:', 'Mention your date of departure(YYYY-MM-DD):', 'Duration of vacation(in number of days):', 'Here\'s what we have planned for you:']
 show_keyboard={'keyboard':[['Yes', 'No', 'Maybe']]}
 hide_keyboard={'hide_keyboard': True}
 budget={'keyboard':[['$0 - $299', '$300 - $599'], ['$600 - $899','$900 - $1199', '$1200+']]}
@@ -21,6 +21,7 @@ bool_arr=[0,0,0,0,0]
 location=''
 groupSize=0
 numDays=0
+departureDate=''
 
 def handle(msg):
 	global i,flag
@@ -58,7 +59,10 @@ def handle(msg):
 		s=str(msg['text'])
 		l=s.split('![0-9]')
 		groupSize=int(l[0])
-		i+=1
+		bot.sendMessage(chat_id, replies[i])
+	elif(i==6 and flag):
+		departureDate=msg['text']
+		print departureDate
 		bot.sendMessage(chat_id, replies[i])
 	elif(i==7 and flag):
 		numDays=int(msg['text'])
