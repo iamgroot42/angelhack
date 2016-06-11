@@ -7,7 +7,7 @@ expedia_key = "IZSqdTKn6HAw070SvuOZblBtPYetEEzf"
 
 #Step 1:
 # Modify this to get user input through chat bot
-city = raw_input()
+city = city + "%" + country
 url = "http://terminal2.expedia.com/x/suggestions/regions?query=" \
 	+ city + "&apikey=" + expedia_key
 req = Request(url=url)
@@ -42,11 +42,6 @@ url = "http://terminal2.expedia.com/x/packages?departureDate=" \
 	+ "&destinationAirport=" + destinationAirport + "&returnDate=" \
 	+ returnDate + "&hotelids=" + ','.join(str(x) for x in hotelIds) \
 	+ "&adults=" + adults + "&limit=20&nonstop=true&apikey=" + expedia_key
-# url = "http://terminal2.expedia.com/x/packages?departureDate=" \
-# 	+ departureDate + "&originAirport=" + originAirport \
-# 	+ "&destinationAirport=" + destinationAirport + "&returnDate=" \
-# 	+ returnDate + "&regionid=" + regionId + "&adults=" \
-# 	+ adults + "&limit=20&nonstop=true&apikey=" + expedia_key
 print url
 req = Request(url=url)
 data = urlopen(req)

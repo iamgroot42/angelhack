@@ -1,6 +1,6 @@
 import json
 import requests
-from pprint import pprint
+
 def find_city_id():
 	names=[]
 	flag =0

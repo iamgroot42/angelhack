@@ -33,13 +33,13 @@ def stripHtmlTags(htmlTxt):
 	return ''.join(BeautifulSoup(htmlTxt,"lxml").findAll(text=True)) 
 
 
-for i in l:
-	x = i.json()['sr']  	
-	for j in x:
-		name = stripHtmlTags(j['d']) 
-		recc[name] = j['score']
-		lat = j['ll']['lat']
-		lng = j['ll']['lng']
+	for i in l:
+		x = i.json()['sr']  	
+		for j in x:
+			name = stripHtmlTags(j['d']) 
+			recc[name] = j['score']
+			lat = j['ll']['lat']
+			lng = j['ll']['lng']
 
 
 for w in sorted(d, key=d.get, reverse=True):
