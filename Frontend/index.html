@@ -192,7 +192,7 @@
                 $("#chatBox").prop("placeholder", "Write Something atleast")
             } else {
                 $.ajax({
-                    url: 'http://localhost:5000/checkUsername?username=' +
+                    url: '/checkUsername?username=' +
                         des,
                     type: 'GET',
                     crossDomain: true,
@@ -200,7 +200,7 @@
                         if (typeof(Storage) !== "undefined" && data ==
                             "True") {
                             localStorage.setItem("username", des);
-                            window.location.replace("/chatbot.html");
+                            window.location.replace("/chat");
                         } else {
                             if (!$("#chatBox").hasClass('has-error'))
                                 $("#chatBox").parent().addClass(
@@ -216,7 +216,7 @@
             }
         })
         $(".modal").on('shown.bs.modal', function(e) {
-            $.get("http://localhost:5000/getCurrentUsers", function(data) {
+            $.get("/getCurrentUsers", function(data) {
                 $(".modal-footer").html("Currently Active Users: " +
                     data);
             });

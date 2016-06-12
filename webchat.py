@@ -99,7 +99,7 @@ class TravelInfo:
 		self.context_level += 1
 		if self.context_level == 7:
 			pam = {'home':s, 'depart':self.departure,'arrive':(datetime.strptime(self.departure,"%Y-%m-%d") + timedelta(days=self.days)).strftime('%Y-%m-%d'),'npeople':self.group_size,'budget':self.budget}
-			r = requests.get('http://10.1.0.38:5000/getPredictions',params = pam)
+			r = requests.get('http://localhost:5000/getPredictions',params = pam)
 			print r.text
 			ar = r.json()["results"]
 			if ar:

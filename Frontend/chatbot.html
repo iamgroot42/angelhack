@@ -120,7 +120,7 @@
         message = $("#chatBox").val();
         $("#chatBox").prop("placeholder", "Waiting for reply!!");
         $("#chatBox").prop('disabled', true);
-        $.get("http://localhost:5000/sendMessage?username=" + des +
+        $.get("/sendMessage?username=" + des +
             "&message=" + message, function(data) {
                 $("#chatBox").prop("placeholder", "Enter some text");
                 $("#chatBox").val("");
