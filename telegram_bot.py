@@ -1,5 +1,6 @@
 import telepot, time, requests, urllib
 from geopy.geocoders import Nominatim
+from geopy.exc import GeocoderTimedOut
 from datetime import datetime, timedelta
 
 haven_api = '2cafa3c4-ef63-463b-bec9-3726c6819e5b'
@@ -8,7 +9,7 @@ token = '208217948:AAHgpZQ6pQPpl6bSs7IImMqupIi5ZyWwyoU'
 bot = telepot.Bot(token)
 geolocator = Nominatim()
 replies = ['Hey there, ', 'Would you like to go somewhere?',\
-	'Please choose your budget:', 'Please provide your location:',\
+	'Please choose your budget (in $):', 'Please provide your location:',\
 	'Specify the group size:', 'Mention your date of departure(YYYY-MM-DD):',\
 	'Duration of vacation(in number of days):', 'Here\'s what we have planned for you:']
 show_keyboard = {'keyboard':[['Yes', 'No', 'Maybe']]}
@@ -28,7 +29,6 @@ chat_id = None
 
 def handle(msg):
 	global start, step, home, sz, st_date, duration, budget, chat_id
-	print start, step
 	content_type, chat_type, chat_id = telepot.glance(msg)
 	if start == True:
 		start = False
@@ -40,16 +40,24 @@ def handle(msg):
 		msg_str = str(msg['text'])
 		if msg_str == 'No':
 			start = True
-			bot.sendMessage(chat_id, "Thank you for using Angel. Have a nice day :)")
+			bot.sendMessage(chat_id, "Thank you for using Angel. Have a nice day :)", reply_markup=hide_keyboard)
 		else:
 			step = 1
 			bot.sendMessage(chat_id, replies[3], reply_markup=hide_keyboard)
 	elif step == dict_states['location']:
-		latitude = str(msg['venue']['location']['latitude'])
-		longitude = str(msg['venue']['location']['longitude'])
-		location = geolocator.reverse(latitude + " , " + longitude, timeout = None)
-		city = str(location).split(', ')[-3]
-		country = str(location).split(', ')[-1]
+		if 'venue' in msg.keys():
+			latitude = str(msg['venue']['location']['latitude'])
+			longitude = str(msg['venue']['location']['longitude'])
+		else:
+			latitude = str(msg['location']['latitude'])
+			longitude = str(msg['location']['longitude'])
+		try:
+			# print latitude,longitude
+			location = geolocator.reverse(latitude + " , " + longitude, timeout = None)
+		except GeocoderTimedOut as e:
+			print("Error: geocode failed on input %s with message %s" % (latitude + " , " + longitude, e.msg))
+		city = str(location).encode('utf-8').split(', ')[-3]
+		country = str(location).encode('utf-8').split(', ')[-1]
 		home = city + ', ' + country
 		step = 2
 		bot.sendMessage(chat_id, replies[4])
@@ -81,8 +89,8 @@ def handle(msg):
 				str1 = str1 + "Name : " + str(a["name"]) + "\n"
 				str1 = str1 + "Cost : $" + str(a["cost"]) + "\n"
 				str1 = str1 + "Savings : $" + str(a["savings"]) + "\n"
-				str1 = str1 + "Click for more details : " + str(a["url"])
-				bot.sendMessage(chat_id, str1)
+				str1 = "["+str1+"]("+a["url"]+")"
+				bot.sendMessage(chat_id, str1, parse_mode = 'Markdown')
 			start = True
 			bot.sendMessage(chat_id, "Thanks for using Angel.")
 		else:
