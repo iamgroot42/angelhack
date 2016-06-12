@@ -8,9 +8,10 @@ import xml
 import json
 from urllib2 import *
 import requests
+from webchat import TravelInfo
 from pymongo import MongoClient
 
-app = Flask(__name__, static_url_path='')
+app = Flask(__name__, static_folder='static')
 
 users = []
 user_obj = []
@@ -63,13 +64,14 @@ def sendMessage():
 		return user_obj[l].context(message)
 	return "False"
 
+
 @app.route('/ui')
 def ui():
-    return app.send_static_file('Frontend/index.html')
+    return app.send_static_file('index.html')
 
 @app.route('/chat')
 def chatB():
-    return app.send_static_file('Frontend/chatbot.html')
+    return app.send_static_file('chatbot.html')
 
 
 def print_url(r, **kwargs):
