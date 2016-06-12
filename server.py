@@ -1,4 +1,5 @@
 from flask import Flask
+from flask import jsonify
 from flask import request
 import threading
 import grequests
@@ -75,9 +76,9 @@ def stripHtmlTags(htmlTxt):
 
 
 def get_popular_places():
-	# continents = ['Asia','Europe','Africa','North America','South America','Australia']
+	continents = ['Asia','Europe','Africa','North America','South America','Australia']
 	client = MongoClient()
-	continents = ['Asia']
+	# continents = ['Asia']
 	db = client['angelhack']
 	table = db['places']
 	tbp = table.find()
@@ -126,6 +127,8 @@ def predictions(fromo,start,end,npeople,budget):
 		to = i
 		deal = get_deals(fromo, to, start, end, npeople, budget)
 		
+		if not deal:
+			continue
 		#Places
 		n_places = recc[i]
 
@@ -162,7 +165,7 @@ def predictions(fromo,start,end,npeople,budget):
 
 		suggest[i] = res_dict
 
-	print suggest
+	# print suggest
 	#send suggest to trade-off analytics
 	count = 1
 	options = []
@@ -190,8 +193,12 @@ def predictions(fromo,start,end,npeople,budget):
 	headers = {'content-type': 'application/json'}
 	url = 'https://gateway.watsonplatform.net/tradeoff-analytics/api/v1/dilemmas?generate_visualization=false'
 	faile = json.dumps(mane)
-	r = requests.post(url, auth=(IBM_USER, IBM_PASS), headers = headers, data = faile)
-	z =  r.json()['resolution']['solutions']
+	z = []
+	try:
+		r = requests.post(url, auth=(IBM_USER, IBM_PASS), headers = headers, data = faile)
+		z =  r.json()['resolution']['solutions']
+	except:
+		pass
 	to_hvk = []
 	for y in z:
 		eye = y['solution_ref']
@@ -203,7 +210,7 @@ def predictions(fromo,start,end,npeople,budget):
 		weed['savings'] = zeta['savings']
 		weed['url'] = zeta['deal']['package']['DetailsUrl']
 		to_hvk.append(weed)
-	print to_hvk
+	return to_hvk
 
 
 def get_deals(fromo,to,start,end,npeople, budget):
@@ -246,7 +253,7 @@ def get_deals(fromo,to,start,end,npeople, budget):
 		+ "&destinationAirport=" + airport2Id + "&returnDate=" \
 		+ end + "&hotelids=" + ','.join(str(x) for x in hotelIds) \
 		+ "&adults=" + npeople + "&limit=20&nonstop=true&apikey=" + XPTOKEN
-	print url
+	# print url
 
 	req = Request(url=url)
 	data = urlopen(req)
@@ -257,20 +264,25 @@ def get_deals(fromo,to,start,end,npeople, budget):
 	deals = ex["PackageSearchResultList"]["PackageSearchResult"]
 	hotels = ex["HotelList"]["Hotel"]
 	flights = ex["FlightList"]["Flight"]
-	for deal in deals:
-		price = deal["PackagePrice"]["TotalPrice"]["Value"]
-		if float(price) <= budget:
-			res_deal = {}
-			res_deal['package'] = deal
-			flightid = deal["FlightReferenceIndex"]
-			hotelid = deal["HotelReferenceIndex"]
-			if flights["FlightIndex"] == flightid:
-				res_deal["flight"] = flights
-			for hotel in hotels:
-				if hotel["HotelIndex"] == hotelid:
-					res_deal["hotel"] = hotel
-					break
-			return res_deal
+	for hotelR in range(5, 2, -1):
+		for deal in deals:
+			price = deal["PackagePrice"]["TotalPrice"]["Value"]
+			if float(price) <= float(budget):
+				res_deal = None
+				for hotel in hotels:
+					hotelid = deal["HotelReferenceIndex"]
+					if hotel["HotelIndex"] == hotelid and float(hotel["StarRating"]) >= float(hotelR):
+						res_deal = {}
+						res_deal['package'] = deal
+						flightid = deal["FlightReferenceIndex"]
+						if flights["FlightIndex"] == flightid:
+							res_deal["flight"] = flights
+						res_deal["hotel"] = hotel
+						break
+				if not res_deal:
+					continue
+				else:
+					return res_deal
 	return None
 
 
@@ -281,17 +293,22 @@ def getPredictions():
 	arrive = request.args.get('arrive')
 	npeople = request.args.get('npeople')
 	budget = request.args.get('budget')
+	print home
+	print depart
+	print arrive
+	print npeople
+	print budget
 	ret_obj = predictions(home,depart,arrive,npeople,budget)
-	return ret_obj
+	print ret_obj
+	return jsonify({"results":ret_obj})
 
 
 @app.after_request
 def apply_caching(response):
-    response.headers["Access-Control-Allow-Origin"] = "*"
-    return response
+	response.headers["Access-Control-Allow-Origin"] = "*"
+	return response
 
 
 if __name__ == "__main__":
 	get_popular_places()
-	# predictions("New Delhi, India", "2016-08-13", "2016-08-20", "2", 2000.0)
-    app.run(debug=True,host="0.0.0.0",threaded=True)
+	app.run(debug=True,host="0.0.0.0", threaded=True)
