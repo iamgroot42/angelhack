@@ -13,6 +13,7 @@ from pymongo import MongoClient
 app = Flask(__name__, static_url_path='')
 
 users = []
+user_obj = []
 recc = {}
 XPTOKEN = 'IZSqdTKn6HAw070SvuOZblBtPYetEEzf'
 IBM_USER = '08c030a8-9afd-4ce5-8241-564b39bb5f8c'
@@ -56,8 +57,19 @@ def sendMessage():
 	username = request.args.get('username')
 	message = request.args.get('message')
 	if username in users:
-		return "Potato is the new tomato :)"
+		l = users.index(username)
+		if len(user_obj)-1 < l:
+			user_obj.append(TravelInfo())
+		return user_obj[l].context(message)
 	return "False"
+
+@app.route('/ui')
+def ui():
+    return app.send_static_file('Frontend/index.html')
+
+@app.route('/chat')
+def chatB():
+    return app.send_static_file('Frontend/chatbot.html')
 
 
 def print_url(r, **kwargs):
