@@ -102,6 +102,10 @@
     <script src="/js/flat-ui.min.js">
     </script> 
     <script>
+    var des;
+    if (typeof(Storage) !== "undefined") {
+        des = localStorage.getItem("username");
+    }
     $("#chatBox").keyup(function(e) {
     if (e.keyCode == 13) {
         var des;
@@ -116,9 +120,10 @@
         message = $("#chatBox").val();
         $("#chatBox").prop("placeholder", "Waiting for reply!!");
         $("#chatBox").prop('disabled', true);
-        $.get("http://10.1.0.88:5000/sendMessage?username=" + des +
+        $.get("http://localhost:5000/sendMessage?username=" + des +
             "&message=" + message, function(data) {
                 $("#chatBox").prop("placeholder", "Enter some text");
+                $("#chatBox").val("");
                 $("#chatBox").prop('disabled', false);
                 $("#chat").prepend(
                     '<div class="panel panel-default MessageServe" ><div class="panel-body" style="text-align:right;">' +
@@ -128,6 +133,7 @@
             });
         }
     });
+    
     </script>
 </body>
 </html>
