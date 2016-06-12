@@ -10,13 +10,14 @@ from urllib2 import *
 import requests
 from pymongo import MongoClient
 
-app = Flask(__name__, static_folder='image_files', static_url_path='')
+app = Flask(__name__, static_url_path='')
 
 users = []
 recc = {}
 XPTOKEN = 'IZSqdTKn6HAw070SvuOZblBtPYetEEzf'
 IBM_USER = '08c030a8-9afd-4ce5-8241-564b39bb5f8c'
 IBM_PASS = 'xvUcgeDDyACP'
+
 
 @app.route("/")
 def welcome():
@@ -104,7 +105,7 @@ def get_popular_places():
 
 def places_of_interest(latitude, longitude):
 	print "chu"
-	url = "http://terminal2.expedia.com/x/geo/features?within=1km&lng="\
+	url = "http://terminal2.expedia.com/x/geo/features?within=15km&lng="\
 		+ str(longitude) + "&lat=" + str(latitude)\
 		+ "&type=point_of_interest&verbose=3&lcid=1033&apikey=" + XPTOKEN
 	print url
@@ -214,76 +215,83 @@ def predictions(fromo,start,end,npeople,budget):
 
 
 def get_deals(fromo,to,start,end,npeople, budget):
-	from_val = '%20'.join(str(x) for x in fromo.split())
-	url = "http://terminal2.expedia.com/x/suggestions/regions?query=" \
-		+  from_val + "&apikey=" + XPTOKEN
-	req = Request(url = url)
-	data = urlopen(req)
-	ex = json.loads(data.read())
-	regionId = ex["sr"][0]["id"]
-	airportId = ex["sr"][0]["a"]
-	print "Done1"
+	try:
+		from_val = '%20'.join(str(x) for x in fromo.split())
+		url = "http://terminal2.expedia.com/x/suggestions/regions?query=" \
+			+  from_val + "&apikey=" + XPTOKEN
+		req = Request(url = url)
+		data = urlopen(req)
+		ex = json.loads(data.read())
+		regionId = ex["sr"][0]["id"]
+		airportId = ex["sr"][0]["a"]
+		print "Done1"
 
-	to_val = '%20'.join(str(x) for x in to.split())
-	url = "http://terminal2.expedia.com/x/suggestions/regions?query=" \
-		+  to_val + "&apikey=" + XPTOKEN
-	req = Request(url = url)
-	data = urlopen(req)
-	ex = json.loads(data.read())
-	airport2Id = ex["sr"][0]["a"]
-	print "Done2"
+		to_val = '%20'.join(str(x) for x in to.split())
+		url = "http://terminal2.expedia.com/x/suggestions/regions?query=" \
+			+  to_val + "&apikey=" + XPTOKEN
+		req = Request(url = url)
+		data = urlopen(req)
+		ex = json.loads(data.read())
+		airport2Id = ex["sr"][0]["a"]
+		print "Done2"
 
-	url = "http://terminal2.expedia.com/x/mhotels/search?regionId=" \
-		+ str(regionId) + "&checkInDate=" + str(start) + "&checkOutDate=" \
-		+ str(end) + "&room1=2&apikey=" + XPTOKEN
-	req = Request(url=url)
-	data = urlopen(req)
-	ex = json.loads(data.read())
-	# print ex
-	print "Done3"
+		url = "http://terminal2.expedia.com/x/mhotels/search?regionId=" \
+			+ str(regionId) + "&checkInDate=" + str(start) + "&checkOutDate=" \
+			+ str(end) + "&room1=2&apikey=" + XPTOKEN
+		req = Request(url=url)
+		data = urlopen(req)
+		ex = json.loads(data.read())
+		# print ex
+		print "Done3"
 
-	hotels = ex["hotelList"]
-	hotelIds = []
-	for hotel in hotels:
-		if float(hotel["hotelStarRating"]) >= 3.0:
-			hotelIds.append(hotel["hotelId"])
+		hotels = ex["hotelList"]
+		hotelIds = []
+		for hotel in hotels:
+			if float(hotel["hotelStarRating"]) >= 3.0:
+				hotelIds.append(hotel["hotelId"])
 
-	url = "http://terminal2.expedia.com/x/packages?departureDate=" \
-		+ start + "&originAirport=" + airportId \
-		+ "&destinationAirport=" + airport2Id + "&returnDate=" \
-		+ end + "&hotelids=" + ','.join(str(x) for x in hotelIds) \
-		+ "&adults=" + npeople + "&limit=20&nonstop=true&apikey=" + XPTOKEN
-	# print url
+		url = "http://terminal2.expedia.com/x/packages?departureDate=" \
+			+ start + "&originAirport=" + airportId \
+			+ "&destinationAirport=" + airport2Id + "&returnDate=" \
+			+ end + "&hotelids=" + ','.join(str(x) for x in hotelIds) \
+			+ "&adults=" + npeople + "&limit=20&nonstop=true&apikey=" + XPTOKEN
+		# print url
 
-	req = Request(url=url)
-	data = urlopen(req)
-	ex = json.loads(data.read())
-	# print ex
-	print "Done4"
+		req = Request(url=url)
+		data = urlopen(req)
+		ex = json.loads(data.read())
+		# print ex
+		print "Done4"
 
-	deals = ex["PackageSearchResultList"]["PackageSearchResult"]
-	hotels = ex["HotelList"]["Hotel"]
-	flights = ex["FlightList"]["Flight"]
-	for hotelR in range(5, 2, -1):
-		for deal in deals:
-			price = deal["PackagePrice"]["TotalPrice"]["Value"]
-			if float(price) <= float(budget):
-				res_deal = None
-				for hotel in hotels:
-					hotelid = deal["HotelReferenceIndex"]
-					if hotel["HotelIndex"] == hotelid and float(hotel["StarRating"]) >= float(hotelR):
-						res_deal = {}
-						res_deal['package'] = deal
-						flightid = deal["FlightReferenceIndex"]
-						if flights["FlightIndex"] == flightid:
-							res_deal["flight"] = flights
-						res_deal["hotel"] = hotel
-						break
-				if not res_deal:
-					continue
-				else:
-					return res_deal
-	return None
+		try:
+			deals = ex["PackageSearchResultList"]["PackageSearchResult"]
+		except:
+			return None
+
+		hotels = ex["HotelList"]["Hotel"]
+		flights = ex["FlightList"]["Flight"]
+		for hotelR in range(5, 2, -1):
+			for deal in deals:
+				price = deal["PackagePrice"]["TotalPrice"]["Value"]
+				if float(price) <= float(budget):
+					res_deal = None
+					for hotel in hotels:
+						hotelid = deal["HotelReferenceIndex"]
+						if hotel["HotelIndex"] == hotelid and float(hotel["StarRating"]) >= float(hotelR):
+							res_deal = {}
+							res_deal['package'] = deal
+							flightid = deal["FlightReferenceIndex"]
+							if flights["FlightIndex"] == flightid:
+								res_deal["flight"] = flights
+							res_deal["hotel"] = hotel
+							break
+					if not res_deal:
+						continue
+					else:
+						return res_deal
+		return None
+	except:
+		return None
 
 
 @app.route("/getPredictions")
